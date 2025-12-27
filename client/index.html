@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/stock.png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap"
+      rel="stylesheet"
+    />
+    <title>SimpleStock!</title>
+  </head>
+  <body>
+    <main>
+      <h1>SimpleStock!</h1>
+      <div class="input-form">
+        <input type="text" id="product-name" />
+        <select id="product-category">
+          <option value="Beverages">Beverages</option>
+          <option value="Biscuits">Biscuits</option>
+          <option value="Canned Goods">Canned Goods</option>
+          <option value="Cigarettes">Cigarettes</option>
+          <option value="Personal Care">Personal Care</option>
+        </select>
+        <input type="number" id="product-price" />
+        <input type="number" id="product-qty" />
+        <button id="add-btn">Add Product</button>
+      </div>
+      <table>
+        <thead>
+          <th>Name</th>
+          <th>Category</th>
+          <th>Price</th>
+          <th>Quantity</th>
+          <th>Actions</th>
+        </thead>
+        <tbody id="inventory-list"></tbody>
+      </table>
+    </main>
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>

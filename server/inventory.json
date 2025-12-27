@@ -1,0 +1,16 @@
+[
+  {
+    "name": "Marlboro (1pack)",
+    "category": "Cigarettes",
+    "price": 160,
+    "quantity": 20,
+    "id": 1766818745374
+  },
+  {
+    "name": "Coke XL (1pc)",
+    "category": "Beverages",
+    "price": 70,
+    "quantity": 15,
+    "id": 1766820771012
+  }
+]
