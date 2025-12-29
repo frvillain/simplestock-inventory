@@ -16,7 +16,7 @@
     <main>
       <h1>SimpleStock!</h1>
       <div class="input-form">
-        <input type="text" id="product-name" />
+        <input type="text" id="product-name" placeholder="Product Name" />
         <select id="product-category">
           <option value="Beverages">Beverages</option>
           <option value="Biscuits">Biscuits</option>
@@ -24,9 +24,12 @@
           <option value="Cigarettes">Cigarettes</option>
           <option value="Personal Care">Personal Care</option>
         </select>
-        <input type="number" id="product-price" />
-        <input type="number" id="product-qty" />
+        <input type="number" id="product-price" placeholder="Price" />
+        <input type="number" id="product-qty" placeholder="Quantity" />
         <button id="add-btn">Add Product</button>
+      </div>
+      <div>
+        <input type="text" id="search-box" placeholder="Search Item..." />
       </div>
       <table>
         <thead>

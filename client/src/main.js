@@ -6,10 +6,11 @@ const pPrice = document.getElementById("product-price");
 const pQty = document.getElementById("product-qty");
 const addBtn = document.getElementById("add-btn");
 const tBody = document.getElementById("inventory-list");
+const searchInput = document.getElementById("search-box");
 
 const API_URL = "http://localhost:3000/items";
 
-async function fetchInventory() {
+async function fetchInventory(searchQuery = ``) {
   tBody.innerHTML = `
     <tr>
         <td colspan="5" style="text-align: center; padding: 20px;">
@@ -18,12 +19,18 @@ async function fetchInventory() {
     </tr>
   `;
   try {
-    const response = await fetch(API_URL);
+    let url = API_URL;
+    if (searchQuery) {
+      url = `${API_URL}?search=${searchQuery}`;
+    }
+
+    const response = await fetch(url);
+
     if (!response.ok) {
       throw new Error("Server Error");
     }
-    const data = await response.json();
 
+    const data = await response.json();
     renderInventory(data);
   } catch (error) {
     tBody.innerHTML = `<tr><td colspan="5" style="text-align: center; color: red;">Error loading data</td></tr>`;
@@ -39,12 +46,12 @@ async function renderInventory(data) {
       <td>${item.category}</td>
       <td>₱${item.price}</td>
       <td>
-        <button class="btn-qty" data-id="${item.id}" data-action="decrease">-</button>
+        <button class="btn-qty" data-id="${item._id}" data-action="decrease">-</button>
         <span>${item.quantity}</span>
-        <button class="btn-qty" data-id="${item.id}" data-action="increase">+</button>
+        <button class="btn-qty" data-id="${item._id}" data-action="increase">+</button>
       </td>
       <td>
-        <button class="btn-delete" data-id="${item.id}">Delete</button>
+        <button class="btn-delete" data-id="${item._id}">Delete</button>
       </td>
 
   </tr>
@@ -113,4 +120,9 @@ tBody.addEventListener("click", (e) => {
   if (e.target.classList.contains("btn-delete")) {
     deleteProduct(id);
   }
+});
+
+searchInput.addEventListener("input", (e) => {
+  const text = e.target.value;
+  fetchInventory(text);
 });
