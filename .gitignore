@@ -1,5 +1,7 @@
 # Dependency directories
 node_modules/
+server/node_modules
+client/node_modules
 
 # System files
 .DS_Store
@@ -7,3 +9,4 @@ Thumbs.db
 
 # Environment variables (Safety first!)
 .env
+server/.env
