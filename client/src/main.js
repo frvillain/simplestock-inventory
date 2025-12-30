@@ -8,7 +8,8 @@ const addBtn = document.getElementById("add-btn");
 const tBody = document.getElementById("inventory-list");
 const searchInput = document.getElementById("search-box");
 
-const API_URL = "http://localhost:3000/items";
+// const API_URL = "http://localhost:3000/items";
+const API_URL = "simplestock-inventory-production.up.railway.app/items";
 
 async function fetchInventory(searchQuery = ``) {
   tBody.innerHTML = `
