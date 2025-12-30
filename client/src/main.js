@@ -39,9 +39,9 @@ async function fetchInventory(searchQuery = ``) {
 
 async function renderInventory(data) {
   tBody.innerHTML = data
-    .map(
-      (item) => `
-  <tr>
+    .map((item) => {
+      const lowStockClass = item.quantity < 5 ? `low-stock` : ``;
+      return `<tr class="${lowStockClass}">
       <td>${item.name}</td>
       <td>${item.category}</td>
       <td>₱${item.price}</td>
@@ -55,8 +55,8 @@ async function renderInventory(data) {
       </td>
 
   </tr>
-  `
-    )
+  `;
+    })
     .join("");
 }
 
@@ -71,23 +71,36 @@ async function addProduct() {
     return;
   }
 
-  await fetch(API_URL, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      name: productName,
-      category: productCategory,
-      price: productPrice,
-      quantity: productQty,
-    }),
-  });
+  const originalText = addBtn.innerText;
+  addBtn.innerText = "Adding...";
+  addBtn.disabled = true;
 
-  pName.value = "";
-  pPrice.value = "";
-  pQty.value = "";
-  fetchInventory();
+  try {
+    await fetch(API_URL, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        name: productName,
+        category: productCategory,
+        price: productPrice,
+        quantity: productQty,
+      }),
+    });
+
+    pName.value = "";
+    pPrice.value = "";
+    pQty.value = "";
+    pCategory.value = "";
+    fetchInventory();
+    showToast("Product added succesfully", "success");
+  } catch (error) {
+    alert("Failed to add product");
+  } finally {
+    addBtn.innerText = originalText;
+    addBtn.disabled = false;
+  }
 }
 
 async function updateQuantity(id, action) {
@@ -100,10 +113,62 @@ async function updateQuantity(id, action) {
 }
 
 async function deleteProduct(id) {
-  await fetch(`${API_URL}/${id}`, {
-    method: "DELETE",
-  });
-  fetchInventory();
+  const isConfirmed = confirm("Are you sure you want to delete this item?");
+
+  if (!isConfirmed) {
+    return;
+  }
+
+  try {
+    const response = await fetch(`${API_URL}/${id}`, {
+      method: "DELETE",
+    });
+
+    if (!response.ok) throw new Error("Failed to delete.");
+
+    fetchInventory();
+
+    showToast("Product deleted successfully!", "danger");
+  } catch (error) {
+    alert(`Error deleting product.`);
+  }
+}
+
+// A utility function to delay execution
+function debounce(func, delay) {
+  let timeoutId;
+  return (...args) => {
+    clearTimeout(timeoutId);
+    timeoutId = setTimeout(() => {
+      func.apply(null, args);
+    }, delay);
+  };
+}
+
+function showToast(message, type = "success") {
+  const container = document.getElementById("toast-container");
+
+  // Create the element
+  const toast = document.createElement("div");
+  toast.className = `toast ${type}`;
+  toast.innerText = message;
+
+  // Add to screen
+  container.appendChild(toast);
+
+  // Trigger animation (small delay ensures CSS transition catches it)
+  setTimeout(() => {
+    toast.classList.add("show");
+  }, 10);
+
+  // Remove after 3 seconds
+  setTimeout(() => {
+    toast.classList.remove("show");
+    // Wait for fade out animation to finish before removing from DOM
+    setTimeout(() => {
+      toast.remove();
+    }, 300);
+  }, 3000);
 }
 
 fetchInventory();
@@ -122,7 +187,9 @@ tBody.addEventListener("click", (e) => {
   }
 });
 
-searchInput.addEventListener("input", (e) => {
+const handleSearch = debounce((e) => {
   const text = e.target.value;
   fetchInventory(text);
-});
+}, 500);
+
+searchInput.addEventListener("input", handleSearch);
