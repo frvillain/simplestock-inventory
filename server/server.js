@@ -9,7 +9,14 @@ const PORT = 3000;
 
 const DB_FILE = path.join(__dirname, "inventory.json");
 
-app.use(cors());
+app.use(
+  cors({
+    origin: [
+      "https://simplestock-inventory.netlify.app",
+      "http://localhost:5173",
+    ],
+  })
+);
 app.use(express.json());
 
 function getInventory() {
