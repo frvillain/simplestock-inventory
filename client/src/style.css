@@ -8,6 +8,7 @@
 :root {
   --primary-color: #4a90e2;
   --danger-color: #e74c3c;
+  --edit-color: #6ba95f;
   --bg-color: #f4f4f9;
   --text-color: #333;
   --border-radius: 8px;
@@ -50,8 +51,10 @@ select {
   flex: 1;
 }
 
-#add-btn {
+#add-btn,
+#btn-filter {
   background-color: var(--primary-color);
+  min-width: 120px;
   color: white;
   border: none;
   padding: 10px 20px;
@@ -84,6 +87,30 @@ td {
   padding: 12px 15px;
   text-align: left;
   border-bottom: 1px solid #ddd;
+}
+
+#search-filter-container {
+  display: flex;
+  justify-content: space-between;
+}
+
+#search-box {
+  max-width: 300px;
+}
+
+#filter-container {
+  display: flex;
+  gap: 10px;
+}
+
+#action-column {
+  text-align: center;
+}
+
+#action-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 5px;
 }
 
 tbody tr:nth-of-type(even) {
@@ -121,6 +148,22 @@ tbody tr:hover {
 
 .btn-delete:hover {
   background-color: var(--danger-color);
+  color: white;
+}
+
+.btn-edit {
+  background-color: white;
+  color: var(--edit-color);
+  border: 1px solid var(--edit-color);
+  padding: 5px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  transition: all 0.2s;
+}
+
+.btn-edit:hover {
+  background-color: var(--edit-color);
   color: white;
 }
 

@@ -69,7 +69,7 @@ async function renderInventory(data) {
         <span>${item.quantity}</span>
         <button class="btn-qty" data-id="${item._id}" data-action="increase">+</button>
       </td>
-      <td>
+      <td id="action-buttons">
         <button class="btn-delete" data-id="${item._id}">Delete</button>
         <button class="btn-edit" data-id="${item._id}">Edit</button>
       </td>
