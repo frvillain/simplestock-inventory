@@ -66,9 +66,12 @@ select {
 }
 
 table {
+  /* display: block; */
   width: 100%;
   border-collapse: collapse;
   margin-top: 20px;
+  /* overflow-x: auto;
+  white-space: nowrap; */
 }
 
 thead {

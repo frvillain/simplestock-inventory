@@ -7,9 +7,16 @@ const pQty = document.getElementById("product-qty");
 const addBtn = document.getElementById("add-btn");
 const tBody = document.getElementById("inventory-list");
 const searchInput = document.getElementById("search-box");
+const pFilter = document.getElementById("filter-category");
+const filterBtn = document.getElementById("btn-filter");
 
-// const API_URL = "http://localhost:3000/items";
-const API_URL = "https://simplestock-inventory-production.up.railway.app/items";
+const isLocal = window.location.hostname === "localhost";
+const API_URL = isLocal
+  ? "http://localhost:3000/items"
+  : "https://simplestock-inventory-production.up.railway.app/items";
+
+let allProducts = [];
+let currentFilter = "All";
 
 async function fetchInventory(searchQuery = ``) {
   tBody.innerHTML = `
@@ -32,10 +39,21 @@ async function fetchInventory(searchQuery = ``) {
     }
 
     const data = await response.json();
-    renderInventory(data);
+    allProducts = data;
+    // renderInventory(allProducts);
+    applyFilter();
   } catch (error) {
     tBody.innerHTML = `<tr><td colspan="5" style="text-align: center; color: red;">Error loading data</td></tr>`;
   }
+}
+
+function applyFilter() {
+  let result = allProducts;
+  if (currentFilter !== "All") {
+    result = result.filter((product) => product.category === currentFilter);
+  }
+
+  renderInventory(result);
 }
 
 async function renderInventory(data) {
@@ -53,6 +71,7 @@ async function renderInventory(data) {
       </td>
       <td>
         <button class="btn-delete" data-id="${item._id}">Delete</button>
+        <button class="btn-edit" data-id="${item._id}">Edit</button>
       </td>
 
   </tr>
@@ -113,6 +132,20 @@ async function updateQuantity(id, action) {
   fetchInventory();
 }
 
+async function updateItem(id, newName, newPrice) {
+  try {
+    await fetch(`${API_URL}/${id}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ name: newName, price: newPrice }),
+    });
+    fetchInventory();
+    showToast("Product updated!", "success");
+  } catch (error) {
+    alert("Error updating product");
+  }
+}
+
 async function deleteProduct(id) {
   const isConfirmed = confirm("Are you sure you want to delete this item?");
 
@@ -134,6 +167,17 @@ async function deleteProduct(id) {
     alert(`Error deleting product.`);
   }
 }
+
+// function filterByCategory(category) {
+//   if (category === "All") {
+//     renderInventory(allProducts);
+//   } else {
+//     const filtered = allProducts.filter(
+//       (product) => product.category === category
+//     );
+//     renderInventory(filtered);
+//   }
+// }
 
 // A utility function to delay execution
 function debounce(func, delay) {
@@ -186,6 +230,19 @@ tBody.addEventListener("click", (e) => {
   if (e.target.classList.contains("btn-delete")) {
     deleteProduct(id);
   }
+  if (e.target.classList.contains("btn-edit")) {
+    const editItem = allProducts.find((item) => item._id === id);
+
+    const newName = prompt("Enter new name:", editItem.name);
+    const newPrice = Number(prompt("Enter new price:", editItem.price));
+
+    if (!newName || !newPrice) {
+      alert("No changes made.");
+      return;
+    }
+
+    updateItem(id, newName, newPrice);
+  }
 });
 
 const handleSearch = debounce((e) => {
@@ -194,3 +251,8 @@ const handleSearch = debounce((e) => {
 }, 500);
 
 searchInput.addEventListener("input", handleSearch);
+
+filterBtn.addEventListener("click", () => {
+  currentFilter = pFilter.value;
+  applyFilter();
+});

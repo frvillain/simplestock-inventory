@@ -17,6 +17,7 @@ app.use(
     ],
   })
 );
+// app.use(cors());
 app.use(express.json());
 
 function getInventory() {
@@ -82,30 +83,10 @@ app.post("/items", async (req, res) => {
 });
 
 app.patch("/items/:id", async (req, res) => {
-  // const id = parseInt(req.params.id);
+  const id = req.params.id;
   // const action = req.body.action;
-
-  // const items = getInventory();
-  // const itemToUpdate = items.find((item) => item.id === id);
-
-  // if (itemToUpdate) {
-  //   if (action === "increase") {
-  //     itemToUpdate.quantity += 1;
-  //   }
-  //   if (action === "decrease") {
-  //     if (itemToUpdate.quantity > 0) {
-  //       itemToUpdate.quantity -= 1;
-  //     }
-  //   }
-  // }
-
-  // saveInventory(items);
-  // res.json(itemToUpdate);
-
+  const { name, price, action } = req.body;
   try {
-    const id = req.params.id;
-    const action = req.body.action;
-
     const item = await Item.findById(id);
 
     if (!item) {
@@ -118,6 +99,14 @@ app.patch("/items/:id", async (req, res) => {
       if (item.quantity > 0) {
         item.quantity -= 1;
       }
+    }
+
+    if (name) {
+      item.name = name;
+    }
+
+    if (price) {
+      item.price = price;
     }
 
     const updatedItem = await item.save();
